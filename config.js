@@ -13,14 +13,12 @@ window.SpliceSupplyConfig = {
 
     // API Configuration
     API: {
-        // Backend API URL - Replace with your actual API server URL
-        baseUrl: 'https://your-api-domain.com', // Your VPS or cloud API server
-        
-        // Fallback API URLs for redundancy
-        fallbackUrls: [
-            'https://your-backup-api.com',
-            'https://your-secondary-api.com'
-        ],
+        // GitHub Pages Mode - Use Telegram WebApp for communication
+        mode: 'telegram_webapp', // 'server' or 'telegram_webapp'
+        baseUrl: null, // Not used in telegram_webapp mode
+
+        // Fallback API URLs for redundancy (not used in GitHub Pages)
+        fallbackUrls: [],
         
         // API endpoints
         endpoints: {
@@ -42,7 +40,7 @@ window.SpliceSupplyConfig = {
     // Telegram Configuration
     TELEGRAM: {
         // Bot configuration
-        botUsername: 'splicesupplybot', // Replace with your bot username
+        botUsername: 'splicesupplybot', // Your actual bot username
         
         // Channel links
         channels: {

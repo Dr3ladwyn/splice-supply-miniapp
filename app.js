@@ -350,10 +350,16 @@ class SpliceSupplyApp {
         }
     }
 
-    // API call method with GitHub Pages compatibility
+    // GitHub Pages compatible communication method
     async apiCall(endpoint, options = {}) {
+        // For GitHub Pages, use Telegram WebApp communication
+        if (this.config.API.mode === 'telegram_webapp') {
+            return this.telegramWebAppCall(endpoint, options);
+        }
+
+        // Fallback to server API (for VPS deployment)
         const url = this.utils.getApiUrl(endpoint);
-        
+
         const defaultOptions = {
             headers: {
                 'Content-Type': 'application/json',
@@ -364,7 +370,7 @@ class SpliceSupplyApp {
         };
 
         const requestOptions = { ...defaultOptions, ...options };
-        
+
         // Add timeout to fetch request
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), requestOptions.timeout);
@@ -373,7 +379,7 @@ class SpliceSupplyApp {
         try {
             const response = await fetch(url, requestOptions);
             clearTimeout(timeoutId);
-            
+
             if (!response.ok) {
                 throw new Error(`API call failed: ${response.status} ${response.statusText}`);
             }
@@ -381,12 +387,81 @@ class SpliceSupplyApp {
             return await response.json();
         } catch (error) {
             clearTimeout(timeoutId);
-            
+
             if (error.name === 'AbortError') {
                 throw new Error('Request timeout');
             }
-            
+
             this.utils.reportError(error, `API call to ${endpoint}`);
+            throw error;
+        }
+    }
+
+    // Telegram WebApp communication for GitHub Pages
+    async telegramWebAppCall(endpoint, options = {}) {
+        try {
+            // For GitHub Pages deployment, we'll use mock data and Telegram WebApp features
+            switch (endpoint) {
+                case '/api/user/status':
+                    return this.getMockUserStatus();
+
+                case '/api/files/counts':
+                    return this.getMockFileCounts();
+
+                case '/api/files/free':
+                case '/api/files/premium':
+                    return this.getMockFiles(endpoint.includes('premium') ? 'premium' : 'free', options.body ? JSON.parse(options.body) : {});
+
+                case '/api/stats':
+                    return { status: 'ok', timestamp: Date.now() };
+
+                default:
+                    if (endpoint.includes('/download')) {
+                        return this.handleTelegramDownload(endpoint, options);
+                    }
+                    throw new Error(`Endpoint ${endpoint} not supported in GitHub Pages mode`);
+            }
+        } catch (error) {
+            this.utils.reportError(error, `Telegram WebApp call to ${endpoint}`);
+            throw error;
+        }
+    }
+
+    // Handle downloads via Telegram WebApp
+    async handleTelegramDownload(endpoint, options) {
+        try {
+            const fileId = endpoint.match(/\/api\/files\/(\d+)\/download/)?.[1];
+            if (!fileId) {
+                throw new Error('Invalid file ID');
+            }
+
+            const data = options.body ? JSON.parse(options.body) : {};
+
+            // Use Telegram WebApp to send data back to bot
+            if (this.tg) {
+                const downloadData = {
+                    action: 'download_file',
+                    file_id: parseInt(fileId),
+                    user_id: this.user?.id,
+                    timestamp: Date.now()
+                };
+
+                // Send data to bot via WebApp
+                this.tg.sendData(JSON.stringify(downloadData));
+
+                // Show success message
+                this.showToast('Download request sent to bot!', 'success');
+
+                return {
+                    success: true,
+                    message: 'Download request sent to bot',
+                    download_method: 'telegram_webapp'
+                };
+            } else {
+                throw new Error('Telegram WebApp not available');
+            }
+        } catch (error) {
+            this.utils.reportError(error, 'Telegram download');
             throw error;
         }
     }
