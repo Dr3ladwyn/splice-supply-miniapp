@@ -62,7 +62,7 @@ window.SpliceSupplyConfig = {
     APP: {
         // Application metadata
         name: 'Splice Supply Bot',
-        version: '2.0.0',
+        version: '2.0.1', // Cache-busting version update
         description: 'Your ultimate destination for high-quality music production files',
         
         // Feature flags

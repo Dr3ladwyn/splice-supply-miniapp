@@ -3,6 +3,7 @@ class SpliceSupplyApp {
     constructor() {
         this.config = window.SpliceSupplyConfig;
         this.utils = window.SpliceSupplyUtils;
+        this.version = '2.0.1'; // Cache-busting version
         this.tg = window.Telegram?.WebApp;
         this.user = null;
         this.currentSection = 'home';
