@@ -1035,6 +1035,45 @@ body::before {
     border-top: 1px solid var(--border-color);
 }
 
+/* Error and Empty States */
+.error-state, .no-files-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    margin: 2rem 0;
+}
+
+.error-state p, .no-files-state p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.retry-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
 /* Toast Notifications */
 .toast-container {
     position: fixed;
@@ -1054,8 +1093,15 @@ body::before {
     color: var(--text-primary);
     box-shadow: var(--shadow-lg);
     backdrop-filter: var(--blur-md);
-    animation: toastSlideIn 0.3s ease-out;
     max-width: 300px;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
 }
 
 @keyframes toastSlideIn {

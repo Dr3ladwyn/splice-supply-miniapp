@@ -282,7 +282,7 @@ class SpliceSupplyApp {
 
     loadMockData() {
         this.utils.log('Loading mock data for offline mode', 'info');
-        
+
         // Mock user status
         this.userStatus = {
             user_id: this.user?.id || 123456789,
@@ -291,16 +291,189 @@ class SpliceSupplyApp {
             premium_downloads_used: 0,
             premium_downloads_remaining: 3
         };
-        
+
         // Mock file counts
         document.getElementById('free-files-count').textContent = '6';
         document.getElementById('premium-files-count').textContent = '6';
-        
+
         // Update UI
         this.updateUserInfo();
-        
+
         // Show offline notice
         this.showToast('Running in offline mode with sample data', 'warning');
+    }
+
+    // Mock data functions for GitHub Pages deployment
+    getMockUserStatus() {
+        return {
+            user_id: this.user?.id || 123456789,
+            username: this.user?.username || 'testuser',
+            first_name: this.user?.first_name || 'Test User',
+            last_name: this.user?.last_name || '',
+            is_premium: false,
+            premium_downloads_used: 0,
+            premium_downloads_remaining: 3,
+            premium_reset_date: 'Next month'
+        };
+    }
+
+    getMockFileCounts() {
+        return {
+            free_count: 8,
+            premium_count: 10,
+            total_count: 18
+        };
+    }
+
+    getMockFiles(fileType, params = {}) {
+        const page = params.page || 1;
+        const search = params.search || '';
+        const filesPerPage = 6;
+
+        // Mock file data
+        const mockFiles = {
+            free: [
+                {
+                    file_id: 1,
+                    name: 'Free Beat Pack Vol.1',
+                    description: 'High-quality free beats for your productions',
+                    file_type: 'free',
+                    file_size: 15728640,
+                    created_at: '2025-08-20',
+                    download_count: 245
+                },
+                {
+                    file_id: 2,
+                    name: 'Free VST Presets Collection',
+                    description: 'Collection of free synthesizer presets',
+                    file_type: 'free',
+                    file_size: 8388608,
+                    created_at: '2025-08-19',
+                    download_count: 189
+                },
+                {
+                    file_id: 3,
+                    name: 'Free Drum Samples Pack',
+                    description: 'Essential drum samples for hip-hop and trap',
+                    file_type: 'free',
+                    file_size: 12582912,
+                    created_at: '2025-08-18',
+                    download_count: 312
+                },
+                {
+                    file_id: 4,
+                    name: 'Free Melody Loops Starter',
+                    description: 'Catchy melody loops to inspire your tracks',
+                    file_type: 'free',
+                    file_size: 9437184,
+                    created_at: '2025-08-17',
+                    download_count: 156
+                },
+                {
+                    file_id: 5,
+                    name: 'Free Bass Samples',
+                    description: '808s and bass sounds for modern production',
+                    file_type: 'free',
+                    file_size: 7340032,
+                    created_at: '2025-08-16',
+                    download_count: 278
+                },
+                {
+                    file_id: 6,
+                    name: 'Free Vocal Chops Pack',
+                    description: 'Processed vocal samples for creative use',
+                    file_type: 'free',
+                    file_size: 11534336,
+                    created_at: '2025-08-15',
+                    download_count: 203
+                }
+            ],
+            premium: [
+                {
+                    file_id: 7,
+                    name: 'Premium Drum Kit Deluxe',
+                    description: 'Exclusive premium drum samples with stems',
+                    file_type: 'premium',
+                    file_size: 52428800,
+                    created_at: '2025-08-20',
+                    download_count: 89
+                },
+                {
+                    file_id: 8,
+                    name: 'Premium Melody Loops Pro',
+                    description: 'Professional melody loops with MIDI files',
+                    file_type: 'premium',
+                    file_size: 31457280,
+                    created_at: '2025-08-19',
+                    download_count: 67
+                },
+                {
+                    file_id: 9,
+                    name: 'Premium Vocal Pack Elite',
+                    description: 'High-quality vocal samples and harmonies',
+                    file_type: 'premium',
+                    file_size: 45088768,
+                    created_at: '2025-08-18',
+                    download_count: 45
+                },
+                {
+                    file_id: 10,
+                    name: 'Premium Synth Presets Bundle',
+                    description: 'Exclusive synthesizer presets for all genres',
+                    file_type: 'premium',
+                    file_size: 18874368,
+                    created_at: '2025-08-17',
+                    download_count: 78
+                },
+                {
+                    file_id: 11,
+                    name: 'Premium Construction Kit',
+                    description: 'Complete song construction with all elements',
+                    file_type: 'premium',
+                    file_size: 67108864,
+                    created_at: '2025-08-16',
+                    download_count: 34
+                },
+                {
+                    file_id: 12,
+                    name: 'Premium FX & Transitions',
+                    description: 'Professional sound effects and transitions',
+                    file_type: 'premium',
+                    file_size: 23068672,
+                    created_at: '2025-08-15',
+                    download_count: 56
+                }
+            ]
+        };
+
+        let files = mockFiles[fileType] || [];
+
+        // Apply search filter if provided
+        if (search) {
+            files = files.filter(file =>
+                file.name.toLowerCase().includes(search.toLowerCase()) ||
+                file.description.toLowerCase().includes(search.toLowerCase())
+            );
+        }
+
+        // Calculate pagination
+        const totalFiles = files.length;
+        const totalPages = Math.ceil(totalFiles / filesPerPage);
+        const startIndex = (page - 1) * filesPerPage;
+        const endIndex = startIndex + filesPerPage;
+        const paginatedFiles = files.slice(startIndex, endIndex);
+
+        return {
+            files: paginatedFiles,
+            pagination: {
+                current_page: page,
+                total_pages: totalPages,
+                total_files: totalFiles,
+                files_per_page: filesPerPage,
+                has_next: page < totalPages,
+                has_prev: page > 1
+            }
+        };
     }
 
     setupConnectionMonitoring() {
@@ -574,8 +747,212 @@ class SpliceSupplyApp {
     }
 
     async loadFiles(type, page = 1, search = '') {
-        // Implementation from original app.js with error handling
-        this.utils.log(`Loading ${type} files`);
+        try {
+            this.utils.log(`Loading ${type} files - page ${page}, search: "${search}"`);
+
+            // Show loading state
+            const container = document.getElementById(`${type}-files-container`);
+            if (container) {
+                container.innerHTML = '<div class="loading-spinner">Loading files...</div>';
+            }
+
+            // Make API call
+            const response = await this.apiCall(`/api/files/${type}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    page: page,
+                    search: search,
+                    user_id: this.user?.id
+                })
+            });
+
+            // Update current page and search
+            this.currentPage[type] = page;
+            this.searchQuery[type] = search;
+
+            // Store files data
+            if (page === 1) {
+                this.files[type] = response.files || [];
+            } else {
+                this.files[type] = [...this.files[type], ...(response.files || [])];
+            }
+
+            // Display files
+            this.displayFiles(type, response);
+
+            this.utils.log(`Loaded ${response.files?.length || 0} ${type} files`);
+
+        } catch (error) {
+            this.utils.reportError(error, `Loading ${type} files`);
+
+            // Show error state
+            const container = document.getElementById(`${type}-files-container`);
+            if (container) {
+                container.innerHTML = `
+                    <div class="error-state">
+                        <p>❌ Error loading files</p>
+                        <button onclick="app.loadFiles('${type}', ${page}, '${search}')" class="retry-btn">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    displayFiles(type, response) {
+        const container = document.getElementById(`${type}-files-container`);
+        if (!container) {
+            this.utils.log(`Container for ${type} files not found`, 'error');
+            return;
+        }
+
+        const files = response.files || [];
+        const pagination = response.pagination || {};
+
+        if (files.length === 0) {
+            container.innerHTML = `
+                <div class="no-files-state">
+                    <p>📁 No ${type} files found</p>
+                    ${this.searchQuery[type] ? '<p>Try adjusting your search terms</p>' : ''}
+                </div>
+            `;
+            return;
+        }
+
+        // Generate files HTML
+        const filesHTML = files.map(file => `
+            <div class="file-card" data-file-id="${file.file_id}">
+                <div class="file-header">
+                    <h3 class="file-title">${this.escapeHtml(file.name)}</h3>
+                    <span class="file-type ${file.file_type}">${file.file_type.toUpperCase()}</span>
+                </div>
+                <div class="file-info">
+                    <p class="file-description">${this.escapeHtml(file.description)}</p>
+                    <div class="file-meta">
+                        <span class="file-size">${this.formatFileSize(file.file_size)}</span>
+                        <span class="download-count">📥 ${file.download_count || 0}</span>
+                        <span class="file-date">${this.formatDate(file.created_at)}</span>
+                    </div>
+                </div>
+                <div class="file-actions">
+                    <button class="download-btn" onclick="app.downloadFile(${file.file_id}, '${file.file_type}')">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        // Generate pagination HTML
+        const paginationHTML = pagination.total_pages > 1 ? `
+            <div class="pagination">
+                ${pagination.has_prev ? `
+                    <button class="page-btn" onclick="app.loadFiles('${type}', ${pagination.current_page - 1}, '${this.searchQuery[type]}')">
+                        ← Previous
+                    </button>
+                ` : ''}
+                <span class="page-info">
+                    Page ${pagination.current_page} of ${pagination.total_pages}
+                </span>
+                ${pagination.has_next ? `
+                    <button class="page-btn" onclick="app.loadFiles('${type}', ${pagination.current_page + 1}, '${this.searchQuery[type]}')">
+                        Next →
+                    </button>
+                ` : ''}
+            </div>
+        ` : '';
+
+        container.innerHTML = `
+            <div class="files-grid">
+                ${filesHTML}
+            </div>
+            ${paginationHTML}
+        `;
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    formatFileSize(bytes) {
+        if (!bytes) return 'Unknown';
+        const units = ['B', 'KB', 'MB', 'GB'];
+        let size = bytes;
+        let unitIndex = 0;
+
+        while (size >= 1024 && unitIndex < units.length - 1) {
+            size /= 1024;
+            unitIndex++;
+        }
+
+        return `${size.toFixed(1)} ${units[unitIndex]}`;
+    }
+
+    formatDate(dateString) {
+        if (!dateString) return 'Unknown';
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+    }
+
+    async downloadFile(fileId, fileType) {
+        try {
+            this.utils.log(`Downloading file ${fileId} (${fileType})`);
+
+            // Show loading state
+            const button = event.target.closest('.download-btn');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+            button.disabled = true;
+
+            // Make download request
+            const response = await this.apiCall(`/api/files/${fileId}/download`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_id: this.user?.id,
+                    file_type: fileType
+                })
+            });
+
+            if (response.success) {
+                this.showToast('Download request sent to bot!', 'success');
+            } else {
+                this.showToast('Download failed. Please try again.', 'error');
+            }
+
+            // Restore button
+            button.innerHTML = originalText;
+            button.disabled = false;
+
+        } catch (error) {
+            this.utils.reportError(error, 'File download');
+            this.showToast('Download error. Please try again.', 'error');
+
+            // Restore button
+            const button = event.target.closest('.download-btn');
+            button.innerHTML = '<i class="fas fa-download"></i> Download';
+            button.disabled = false;
+        }
+    }
+
+    showToast(message, type = 'info') {
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+
+        // Add to page
+        document.body.appendChild(toast);
+
+        // Show toast
+        setTimeout(() => toast.classList.add('show'), 100);
+
+        // Remove toast
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => document.body.removeChild(toast), 300);
+        }, 3000);
     }
 
     closeModal() {
