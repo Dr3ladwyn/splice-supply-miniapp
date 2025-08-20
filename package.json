@@ -1,0 +1,69 @@
+{
+  "name": "splice-supply-miniapp",
+  "version": "2.0.0",
+  "description": "Splice Supply Bot Mini App - Telegram Mini App for music production files",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 3000 -c-1",
+    "build": "npm run optimize",
+    "optimize": "npm run minify-css && npm run minify-js",
+    "minify-css": "npx cleancss -o styles.min.css styles.css",
+    "minify-js": "npx terser app.js -o app.min.js --compress --mangle",
+    "test": "npm run test-html && npm run test-lighthouse",
+    "test-html": "npx html-validate index.html",
+    "test-lighthouse": "npx lighthouse https://localhost:3000 --output=json --output-path=./lighthouse-report.json",
+    "deploy": "npm run build && git add . && git commit -m 'Deploy Mini App' && git push origin main",
+    "dev": "npx live-server . --port=3000 --no-browser",
+    "validate": "npm run validate-html && npm run validate-css && npm run validate-js",
+    "validate-html": "npx html-validate index.html",
+    "validate-css": "npx stylelint styles.css",
+    "validate-js": "npx eslint app.js config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dr3ladwyn/splice-supply-miniapp.git"
+  },
+  "keywords": [
+    "telegram",
+    "mini-app",
+    "music-production",
+    "samples",
+    "beats",
+    "splice",
+    "github-pages",
+    "web-app"
+  ],
+  "author": "Splice Supply Bot Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dr3ladwyn/splice-supply-miniapp/issues"
+  },
+  "homepage": "https://Dr3ladwyn.github.io/splice-supply-miniapp/",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.2",
+    "eslint": "^8.55.0",
+    "html-validate": "^8.7.4",
+    "http-server": "^14.1.1",
+    "lighthouse": "^11.4.0",
+    "live-server": "^1.2.2",
+    "stylelint": "^15.11.0",
+    "terser": "^5.26.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js",
+    "config.js",
+    "assets/"
+  ]
+}

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Splice Supply Bot</title>
+    <meta name="description" content="Splice Supply Bot - Your ultimate destination for high-quality music production files">
+    <meta name="keywords" content="music production, samples, beats, presets, splice, telegram bot">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://Dr3ladwyn.github.io/splice-supply-miniapp/">
+    <meta property="og:title" content="Splice Supply Bot">
+    <meta property="og:description" content="Your ultimate destination for high-quality music production files">
+    <meta property="og:image" content="https://Dr3ladwyn.github.io/splice-supply-miniapp/assets/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://Dr3ladwyn.github.io/splice-supply-miniapp/">
+    <meta property="twitter:title" content="Splice Supply Bot">
+    <meta property="twitter:description" content="Your ultimate destination for high-quality music production files">
+    <meta property="twitter:image" content="https://Dr3ladwyn.github.io/splice-supply-miniapp/assets/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./styles.css">
+    
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- GitHub Pages specific meta -->
+    <meta name="github-pages" content="true">
+    <meta name="base-url" content="">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <i class="fas fa-music"></i>
+            </div>
+            <h2>Splice Supply Bot</h2>
+            <p>Loading your music production hub...</p>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <span class="progress-text" id="progress-text">Initializing...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container" style="display: none;">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-music"></i>
+                    <h1>Splice Supply</h1>
+                </div>
+                <div class="user-info" id="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name" id="user-name">Loading...</span>
+                        <span class="user-status" id="user-status">
+                            <i class="fas fa-circle"></i> Free User
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-container">
+                <button class="nav-btn active" data-section="home">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </button>
+                <button class="nav-btn" data-section="free-files">
+                    <i class="fas fa-music"></i>
+                    <span>Free Files</span>
+                </button>
+                <button class="nav-btn" data-section="premium-files">
+                    <i class="fas fa-gem"></i>
+                    <span>Premium</span>
+                </button>
+                <button class="nav-btn" data-section="status">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Status</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Section -->
+            <section id="home-section" class="content-section active">
+                <div class="welcome-card">
+                    <div class="welcome-header">
+                        <h2>🎵 Welcome to Splice Supply Bot!</h2>
+                        <p>Your ultimate destination for high-quality music production files.</p>
+                    </div>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card" data-action="browse-free">
+                            <div class="feature-icon">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <h3>Free Files</h3>
+                            <p>Access our collection of free beats, samples, and presets</p>
+                            <div class="feature-stats">
+                                <span id="free-files-count">Loading...</span> files available
+                            </div>
+                        </div>
+                        
+                        <div class="feature-card" data-action="browse-premium">
+                            <div class="feature-icon premium">
+                                <i class="fas fa-gem"></i>
+                            </div>
+                            <h3>Premium Files</h3>
+                            <p>Exclusive premium content with download limits</p>
+                            <div class="feature-stats">
+                                <span id="premium-files-count">Loading...</span> files available
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" data-action="join-channels">
+                            <i class="fas fa-users"></i>
+                            Join Our Channels
+                        </button>
+                        <button class="btn btn-secondary" data-action="view-status">
+                            <i class="fas fa-chart-line"></i>
+                            View My Status
+                        </button>
+                    </div>
+
+                    <!-- GitHub Pages Notice -->
+                    <div class="github-notice">
+                        <div class="notice-content">
+                            <i class="fab fa-github"></i>
+                            <span>Hosted on GitHub Pages</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Free Files Section -->
+            <section id="free-files-section" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-music"></i> Free Files</h2>
+                    <div class="search-container">
+                        <input type="text" id="free-search" placeholder="Search free files..." class="search-input">
+                        <button class="search-btn" data-type="free">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="files-container" id="free-files-container">
+                    <div class="loading-files">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading files...</p>
+                    </div>
+                </div>
+                <div class="pagination" id="free-pagination"></div>
+            </section>
+
+            <!-- Premium Files Section -->
+            <section id="premium-files-section" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-gem"></i> Premium Files</h2>
+                    <div class="search-container">
+                        <input type="text" id="premium-search" placeholder="Search premium files..." class="search-input">
+                        <button class="search-btn" data-type="premium">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="premium-status" id="premium-status">
+                    <div class="status-card">
+                        <div class="status-icon">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div class="status-info">
+                            <h3>Premium Status</h3>
+                            <p id="premium-status-text">Checking membership...</p>
+                            <div class="downloads-info" id="downloads-info" style="display: none;">
+                                <span class="downloads-used">Downloads Used: <strong id="downloads-used">0</strong>/3</span>
+                                <span class="downloads-remaining">Remaining: <strong id="downloads-remaining">3</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="files-container" id="premium-files-container">
+                    <div class="loading-files">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading files...</p>
+                    </div>
+                </div>
+                <div class="pagination" id="premium-pagination"></div>
+            </section>
+
+            <!-- Status Section -->
+            <section id="status-section" class="content-section">
+                <div class="status-overview">
+                    <div class="status-header">
+                        <h2><i class="fas fa-user-circle"></i> My Status</h2>
+                    </div>
+                    
+                    <div class="status-cards">
+                        <div class="status-card">
+                            <div class="status-icon">
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                            <div class="status-details">
+                                <h3>User Information</h3>
+                                <div class="info-row">
+                                    <span class="label">User ID:</span>
+                                    <span class="value" id="status-user-id">Loading...</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="label">Username:</span>
+                                    <span class="value" id="status-username">Loading...</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="label">Premium:</span>
+                                    <span class="value premium-badge" id="status-premium">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-card" id="premium-details-card" style="display: none;">
+                            <div class="status-icon premium">
+                                <i class="fas fa-gem"></i>
+                            </div>
+                            <div class="status-details">
+                                <h3>Premium Status</h3>
+                                <div class="info-row">
+                                    <span class="label">Downloads Used:</span>
+                                    <span class="value" id="status-downloads-used">0/3</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="label">Downloads Remaining:</span>
+                                    <span class="value" id="status-downloads-remaining">3</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="label">Reset Date:</span>
+                                    <span class="value" id="status-reset-date">Loading...</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="label">Status:</span>
+                                    <span class="value premium-active">Active Premium Member</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-card" id="upgrade-card">
+                            <div class="status-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="status-details">
+                                <h3>Upgrade to Premium</h3>
+                                <ul class="benefits-list">
+                                    <li><i class="fas fa-check"></i> 3 exclusive downloads monthly</li>
+                                    <li><i class="fas fa-check"></i> Access to premium sample packs</li>
+                                    <li><i class="fas fa-check"></i> Priority support</li>
+                                </ul>
+                                <button class="btn btn-premium" data-action="join-premium">
+                                    <i class="fas fa-crown"></i>
+                                    Join Premium Channels
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- File Modal -->
+        <div id="file-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">File Details</h3>
+                    <button class="modal-close" id="modal-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- File details will be populated here -->
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="modal-cancel">Cancel</button>
+                    <button class="btn btn-primary" id="modal-download">
+                        <i class="fas fa-download"></i>
+                        Download
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="toast-container"></div>
+
+        <!-- Connection Status -->
+        <div id="connection-status" class="connection-status" style="display: none;">
+            <div class="status-indicator">
+                <i class="fas fa-wifi"></i>
+                <span>Connecting to API...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+</body>
+</html>

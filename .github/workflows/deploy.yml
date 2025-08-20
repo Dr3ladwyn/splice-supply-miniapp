@@ -1,0 +1,115 @@
+name: Deploy Splice Supply Mini App to GitHub Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+    paths:
+      - 'github-pages/**'
+      - '.github/workflows/deploy.yml'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'github-pages/package.json'
+          
+      - name: Install dependencies
+        run: |
+          cd github-pages
+          if [ -f package.json ]; then
+            npm ci
+          else
+            echo "No package.json found, skipping npm install"
+          fi
+          
+      - name: Build Mini App
+        run: |
+          cd github-pages
+          
+          # Create build directory
+          mkdir -p build
+          
+          # Copy all files to build directory
+          cp -r * build/ 2>/dev/null || true
+          
+          # Remove build directory from itself (if copied)
+          rm -rf build/build 2>/dev/null || true
+          
+          # Remove unnecessary files from build
+          rm -rf build/.github 2>/dev/null || true
+          rm -f build/package*.json 2>/dev/null || true
+          rm -f build/README.md 2>/dev/null || true
+          
+          # Optimize files for production
+          echo "Optimizing files for GitHub Pages deployment..."
+          
+          # Update config.js with repository information
+          if [ -f build/config.js ]; then
+            sed -i "s/your-username/${{ github.repository_owner }}/g" build/config.js
+            sed -i "s/splice-supply-miniapp/${{ github.event.repository.name }}/g" build/config.js
+          fi
+          
+          # Update HTML with repository information
+          if [ -f build/index.html ]; then
+            sed -i "s/your-username.github.io\/splice-supply-miniapp/${{ github.repository_owner }}.github.io\/${{ github.event.repository.name }}/g" build/index.html
+          fi
+          
+          echo "Build completed successfully"
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './github-pages/build'
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        
+      - name: Post-deployment verification
+        run: |
+          echo "Deployment completed successfully!"
+          echo "Mini App URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref_name }}"
+          
+          # Wait a moment for deployment to propagate
+          sleep 10
+          
+          # Test if the deployment is accessible
+          curl -f -s -o /dev/null "${{ steps.deployment.outputs.page_url }}" && echo "✅ Mini App is accessible" || echo "❌ Mini App may not be accessible yet"
